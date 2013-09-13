@@ -1,0 +1,13 @@
+{{extend 'layout.html'}}
+<h1>{{=album.f_title}}</h1>
+<table>
+{{columns = 2}}
+{{column = 0}}
+{{for song in songs:}}
+    {{item=TD(A(song.f_title, _href=URL("song_show", args=song.id)))}}
+    {{if column % columns == 0:}}<tr>{{=item}}
+    {{elif column % columns == columns - 1:}}{{=item}}</tr>
+    {{else:}}{{=item}}{{pass}}
+    {{column += 1}}
+    {{pass}}
+</table>

@@ -1,0 +1,14 @@
+{{extend 'layout.html'}}
+<h1>{{=artist.f_name}}</h1>
+<table>
+{{columns = 2}}
+{{column = 0}}
+{{for album in albums:}}
+    {{item=TD(A(album.f_title, _href=URL("album_show", args=album.id)))}}
+    {{if column % columns == 0:}}<tr>{{=item}}
+    {{elif column % columns == columns - 1:}}{{=item}}</tr>
+    {{else:}}{{=item}}{{pass}}
+    {{column += 1}}
+    {{pass}}
+</table>
+{{=BEAUTIFY(response._vars)}}

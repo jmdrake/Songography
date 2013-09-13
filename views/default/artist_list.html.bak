@@ -1,0 +1,13 @@
+{{extend 'layout.html'}}
+<h1>This is the default/artist_list.html template</h1>
+<table>
+{{columns = 2}}
+{{column = 0}}
+{{for artist in artists:}}
+    {{item=TD(A(artist.f_name, _href=URL("artist_show", args=artist.id)))}}
+    {{if column % columns == 0:}}<tr>{{=item}}
+    {{elif column % columns == columns - 1:}}{{=item}}</tr>
+    {{else:}}{{=item}}{{pass}}
+    {{column += 1}}
+    {{pass}}
+</table>

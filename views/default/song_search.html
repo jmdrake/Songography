@@ -1,0 +1,17 @@
+{{extend 'layout.html'}}
+<h1>Search for songs by keyword</h1>
+{{=form}}
+<table>
+<tr><th>Artist</th><th>Collection</th><th>Song</th></tr>
+{{for row in rows:}}
+    <tr>
+        {{for col in row:}}
+            <td>{{=col}}</td>
+        {{pass}}
+    </tr>
+{{pass}}
+</table>
+{{=request.vars.songkeywords}}
+{{=sql}}
+Auth ID
+{{=profile[0].first_name}}

@@ -1,0 +1,65 @@
+# -*- coding: utf-8 -*-
+### required - do no delete
+def user(): return dict(form=auth())
+def download(): return response.download(request,db)
+def call(): return service()
+### end requires
+def index():
+    return dict()
+
+def error():
+    return dict()
+
+@auth.requires_login()
+def artist_manage():
+    form = SQLFORM.smartgrid(db.t_artist,onupdate=auth.archive)
+    return locals()
+
+@auth.requires_login()
+def album_manage():
+    form = SQLFORM.smartgrid(db.t_album,onupdate=auth.archive)
+    return locals()
+
+@auth.requires_login()
+def song_manage():
+    form = SQLFORM.smartgrid(db.t_song,onupdate=auth.archive)
+    return locals()
+
+def artist_list():
+    artists = db().select(db.t_artist.ALL)
+    return locals()
+
+def artist_show():
+    artist = db.t_artist(request.args(0))
+    albums = db(db.t_album.f_artist_id_reference==artist.id).select()
+    return locals()
+
+def album_show():
+    album = db.t_album(request.args(0))
+    songs = db(db.t_song.f_album_id_reference==album.id).select()
+    return locals()
+    
+def song_search():
+    form=FORM("Search Songs", INPUT(_name="songkeywords"), INPUT(_type="submit"))
+    query = request.vars.songkeywords
+    sql = "SELECT t_artist.f_name, t_album.f_title, t_song.f_title FROM t_artist, t_album, t_song" + \
+        " WHERE t_artist.id=t_album.f_artist_id_refence AND t_song.f_album_id_reference=t_album.id" 
+    if request.vars.songkeywords != None:
+        keywords = request.vars.songkeywords.split()
+        for kw in keywords:
+            sql += "AND (t_song.f_title LIKE %" + kw + "%)"        
+           
+    # rows = db.executesql(sql)    
+    if query == "":
+        rows = db((db.t_artist.id==db.t_album.f_artist_id_reference) & 
+            (db.t_song.f_album_id_reference==db.t_album.id)).select(db.t_artist.f_name, db.t_album.f_title, db.t_song.f_title)
+    else:
+        foo = 3
+        rows = db((db.t_artist.id==db.t_album.f_artist_id_reference) &
+            (db.t_song.f_album_id_reference==db.t_album.id) & 
+            (db.t_song.f_title.contains("Praise")))._select(db.t_artist.f_name, db.t_album.f_title, db.t_song.f_title)
+    sql2 = db((db.t_artist.id==db.t_album.f_artist_id_reference) &
+            (db.t_song.f_album_id_reference==db.t_album.id) & 
+            (db.t_song.f_title.contains("Praise")))._select(db.t_artist.f_name, db.t_album.f_title, db.t_song.f_title)
+    form = SQLFORM.smartgrid(db.t_artist)
+    return locals()
